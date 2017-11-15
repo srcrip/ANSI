@@ -1,25 +1,4 @@
-# Crystal ANSI
-
-This library helps send escape sequences to Unix terminals. Now you don't need to use bloated dependencies like termbox or curses to position text in the terminal.
-
-## Installation
-
-Require and include the ANSI module in your code:
-
-`require "ANSI"`
-
-And then:
-
-`include ANSI`
-
-## Usage
-
-The escape sequence methods can be used like so:
-
-```crystal
-require "ANSI"
-include ANSI
-
+# A demonstration
 ANSI.clear
 ANSI.move(0, 1)
 print "Print text at different positions."
@@ -45,6 +24,3 @@ h = size[:height]
 ANSI.move(0, 0)
 print "Width: " + w.to_s + ", Height: " + h.to_s
 sleep 2
-```
-
-Most of the escape sequences are pretty self explanatory by name. There's a wonderful guide [here](http://invisible-island.net/xterm/ctlseqs/ctlseqs.html) if you want more details.

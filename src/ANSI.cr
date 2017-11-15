@@ -1,5 +1,3 @@
-require "./ANSI/*"
-
 # The holy grail for terminal escaping is here: http://invisible-island.net/xterm/ctlseqs/ctlseqs.html
 # Modern virtual terminals such as xterm support a *lot* of escape sequences. These are just some of the most useful.
 module ANSI
@@ -12,7 +10,7 @@ module ANSI
   end
 
   # Move to position row, col.
-  def self.move(row, col)
+  def self.move(col, row)
     print "\e[#{row + 1};#{col + 1}H"
   end
 
@@ -62,8 +60,8 @@ module ANSI
   # Return the screen size.
   def self.size
     {
-      height: `tput lines`,
-      width:  `tput cols`,
+      height: `tput lines`.to_i,
+      width:  `tput cols`.to_i,
     }
   end
 end

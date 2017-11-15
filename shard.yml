@@ -1,0 +1,13 @@
+name: ANSI
+version: 0.1.0
+
+authors:
+  - sevensidedmarble <andrewianstewart@gmail.com>
+
+targets:
+  ANSI:
+    main: src/ANSI.cr
+
+crystal: 0.23.1
+
+license: MIT

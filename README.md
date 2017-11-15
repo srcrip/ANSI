@@ -1,27 +1,14 @@
-# ansi
+# Crystal ANSI
 
-TODO: Write a description here
+This library helps send escape sequences to Unix terminals. Now you don't need to use bloated dependencies like termbox or curses to position text in the terminal.
 
 ## Installation
 
-TODO: Write installation instructions here
+Include the ANSI module in your code:
+
+```require "colorize"
+include ANSI```
 
 ## Usage
 
-TODO: Write usage instructions here
-
-## Development
-
-TODO: Write development instructions here
-
-## Contributing
-
-1. Fork it ( https://github.com/[your-github-name]/ansi/fork )
-2. Create your feature branch (git checkout -b my-new-feature)
-3. Commit your changes (git commit -am 'Add some feature')
-4. Push to the branch (git push origin my-new-feature)
-5. Create a new Pull Request
-
-## Contributors
-
-- [[your-github-name]](https://github.com/[your-github-name]) sevensidedmarble - creator, maintainer
+Most of the escape sequences are pretty self explanatory by name. There's a wonderful guide [here](http://invisible-island.net/xterm/ctlseqs/ctlseqs.html) if you want more details.

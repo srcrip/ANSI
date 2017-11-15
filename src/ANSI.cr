@@ -4,6 +4,11 @@ module ANSI
   # These are called capnames (capability names), and they refer to entries in the terminfo database for a given terminal.
   CUP = self.move
 
+  def self.print_at(str, x, y)
+    self.move(x, y)
+    print str
+  end
+
   # Clear the screen.
   def self.clear
     print "\e[2J"

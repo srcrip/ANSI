@@ -14,6 +14,13 @@ module ANSI
     print "\e[2J"
   end
 
+  # Call Clear, Home, and Reset
+  def self.clear!
+    self.clear
+    self.home
+    print self.reset
+  end
+
   # Move cursor to home position (should be at the upper left of the screen).
   def self.home
     print "\e[H"

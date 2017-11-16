@@ -14,6 +14,11 @@ module ANSI
     print "\e[2J"
   end
 
+  # Move cursor to home position (should be at the upper left of the screen).
+  def self.home
+    print "\e[H"
+  end
+
   # Move to position row, col.
   def self.move(col, row)
     print "\e[#{row + 1};#{col + 1}H"

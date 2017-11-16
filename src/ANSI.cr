@@ -44,13 +44,23 @@ module ANSI
     "\e[0m"
   end
 
+  # Save the state of the cursor.
+  def self.save_cursor
+    print "\e[s"
+  end
+
+  # Restore the state of the cursor.
+  def self.restore_cursor
+    print "\e[u"
+  end
+
   # Save the state of the screen.
-  def self.save
+  def self.save_screen
     print "\e[?1049h"
   end
 
   # Restore the state of the screen.
-  def self.restore
+  def self.restore_screen
     print "\e[?1049l"
   end
 

@@ -1,3 +1,5 @@
+require "colorize"
+
 # The holy grail for terminal escaping is here: http://invisible-island.net/xterm/ctlseqs/ctlseqs.html
 # Modern virtual terminals such as xterm support a *lot* of escape sequences. These are just some of the most useful.
 module ANSI
@@ -19,6 +21,14 @@ module ANSI
     self.clear
     self.home
     print self.reset
+  end
+
+  def self.fg_truecolor(r, g, b)
+    "\e[38;2;#{r};#{g};#{b}m"
+  end
+
+  def self.bg_truecolor(r, g, b)
+    "\e[48;2;#{r};#{g};#{b}m"
   end
 
   # Move cursor to home position (should be at the upper left of the screen).
@@ -56,6 +66,9 @@ module ANSI
     "\e[0m"
   end
 
+  # Reset color
+  # ESC [ 39 m
+
   # Save the state of the cursor.
   def self.save_cursor
     print "\e[s"
@@ -87,8 +100,8 @@ module ANSI
   # Return the screen size.
   def self.size
     {
-      height: `tput lines`.to_i,
-      width:  `tput cols`.to_i,
+      `tput cols`.to_i,
+      `tput lines`.to_i,
     }
   end
 end

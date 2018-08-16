@@ -68,7 +68,17 @@ module ANSI
 
   # Reset color
   # ESC [ 39 m
-
+  
+  def self.save
+    self.save_cursor
+    self.save_screen
+  end
+  
+  def self.restore
+    self.restore_cursor
+    self.restore_screen
+  end
+ 
   # Save the state of the cursor.
   def self.save_cursor
     print "\e[s"

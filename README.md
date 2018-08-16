@@ -13,6 +13,8 @@ dependencies:
     branch: master
 ```
 
+Then run `shards install` to update your dependencies.
+
 Require and include the ANSI module in your code:
 
 `require "ANSI"`

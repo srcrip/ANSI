@@ -4,6 +4,15 @@ This library helps send escape sequences to Unix terminals. Now you don't need t
 
 ## Installation
 
+Include this in your `shard.yml` file:
+
+```yml
+dependencies:
+  ansi:
+    github: Sevensidedmarble/ansi
+    branch: master
+```
+
 Require and include the ANSI module in your code:
 
 `require "ANSI"`

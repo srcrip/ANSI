@@ -19,17 +19,12 @@ Require and include the ANSI module in your code:
 
 `require "ANSI"`
 
-And then:
-
-`include ANSI`
-
 ## Usage
 
-The escape sequence methods can be used like so:
+The escape sequence helpers can be used like so:
 
 ```crystal
 require "ANSI"
-include ANSI
 
 ANSI.clear
 ANSI.move(0, 1)

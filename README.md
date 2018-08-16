@@ -8,8 +8,8 @@ Include this in your `shard.yml` file:
 
 ```yml
 dependencies:
-  ansi:
-    github: Sevensidedmarble/ansi
+  ANSI:
+    github: Sevensidedmarble/ANSI
     branch: master
 ```
 

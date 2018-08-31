@@ -1,117 +1,125 @@
 require "colorize"
 
-# The holy grail for terminal escaping is here: http://invisible-island.net/xterm/ctlseqs/ctlseqs.html
+# More information can be found here: http://invisible-island.net/xterm/ctlseqs/ctlseqs.html
 # Modern virtual terminals such as xterm support a *lot* of escape sequences. These are just some of the most useful.
 module ANSI
-  # These are called capnames (capability names), and they refer to entries in the terminfo database for a given terminal.
-  CUP = self.move
+  extend self
+  class_property? enabled : Bool = true
 
-  def self.print_at(str, x, y)
-    self.move(x, y)
+  # Make `ANSI.enabled` `true` if and only if both of `STDOUT.tty?` and `STDERR.tty?` are `true`.
+  def self.on_tty_only!
+    self.enabled = STDOUT.tty? && STDERR.tty?
+  end
+
+  # TODO add checking against terminfo
+  private CODES = [
+    ["home", "\e[H", "home"],
+    ["bell", "\e[G", "bel"],
+    ["reset", "\e[Z"],
+    ["clear_to_end", "\e[K"],
+    ["save_cursor", "\e[s"],
+    ["restore_cursor", "\e[u"],
+    ["save_screen", "\e[47h"],
+    ["restore_screen", "\e[47l"],
+    ["show_cursor", "\e[25l"],
+    ["hide_cursor", "\e[25h"],
+  ]
+
+  private CODES_WITH_ARGS = [
+    ["move_cursor", [
+      ->(row : Int32, col : Int32) { "\e[#{row.to_s};#{col.to_s}H" },
+      ["row", "col"],
+    ], "cup"],
+    ["move_cursor_up", [
+      ->(n : Int32) { "\e[#{n.to_s}A" },
+      ["n"],
+    ], "cuu"],
+    ["move_cursor_down", [
+      ->(n : Int32) { "\e[#{n.to_s}B" },
+      ["n"],
+    ], "cud"],
+    ["move_cursor_right", [
+      ->(n : Int32) { "\e[#{n.to_s}C" },
+      ["n"],
+    ], "cuf"],
+    ["move_cursor_down", [
+      ->(n : Int32) { "\e[#{n.to_s}D" },
+      ["n"],
+    ], "cub"],
+    ["next_line", [
+      ->(n : Int32) { "\e[#{n.to_s}E" },
+      ["n"],
+    ], "cnl"],
+    ["previous_line", [
+      ->(n : Int32) { "\e[#{n.to_s}F" },
+      ["n"],
+    ], "cpl"],
+    ["move_to_horizontal", [
+      ->(n : Int32) { "\e[#{n.to_s}G" },
+      ["n"],
+    ], "cha"],
+    # Erase display (default: from cursor to end of display).
+    # ESC [ 1 J: erase from start to cursor.
+    # ESC [ 2 J: erase whole display.
+    # ESC [ 3 J: erase whole display including scroll-back.
+    ["erase", [
+      ->(n : Int32) { "\e[#{n.to_s}J" },
+      ["n"],
+    ], "ed"],
+    # Erase line (default: from cursor to end of line).
+    # ESC [ 1 K: erase from start of line to cursor.
+    # ESC [ 2 K: erase whole line.
+    ["erase_line", [
+      ->(n : Int32) { "\e[#{n.to_s}K" },
+      ["n"],
+    ], "el"],
+  ]
+
+  {% for code in CODES %}
+    def {{code[0].id}} (io = STDOUT)
+      io << {{code[1]}} if enabled?
+    end
+  {% end %}
+
+  {% for code in CODES_WITH_ARGS %}
+    def {{code[0].id}} ({{*code[1][0].args}}, io = STDOUT)
+      io << {{code[1][0]}}.call({{*code[1][1].map &.id}}) if enabled?
+    end
+  {% end %}
+
+  def clear
+    erase 2
+  end
+
+  def print_at(str, x, y)
+    move_cursor(x, y)
     print str
   end
 
-  # Clear the screen.
-  def self.clear
-    print "\e[2J"
+  def clear!
+    clear && home && reset
   end
 
-  # Call Clear, Home, and Reset
-  def self.clear!
-    self.clear
-    self.home
-    print self.reset
+  def save
+    save_cursor && save_screen
   end
 
-  def self.fg_truecolor(r, g, b)
-    "\e[38;2;#{r};#{g};#{b}m"
-  end
-
-  def self.bg_truecolor(r, g, b)
-    "\e[48;2;#{r};#{g};#{b}m"
-  end
-
-  # Move cursor to home position (should be at the upper left of the screen).
-  def self.home
-    print "\e[H"
-  end
-
-  # Move to position row, col.
-  def self.move(col, row)
-    print "\e[#{row + 1};#{col + 1}H"
-  end
-
-  # Move up by n cells.
-  def self.move_up(n)
-    print "\e[#{n}A"
-  end
-
-  # Move down by n cells.
-  def self.move_down(n)
-    print "\e[#{n}B"
-  end
-
-  # Move forward by n cells.
-  def self.move_forward(n)
-    print "\e[#{n}C"
-  end
-
-  # Move backward by n cells.
-  def self.move_backward(n)
-    print "\e[#{n}D"
-  end
-
-  # Resets all line attributes.
-  def self.reset
-    "\e[0m"
-  end
-
-  # Reset color
-  # ESC [ 39 m
-  
-  def self.save
-    self.save_cursor
-    self.save_screen
-  end
-  
-  def self.restore
-    self.restore_cursor
-    self.restore_screen
-  end
- 
-  # Save the state of the cursor.
-  def self.save_cursor
-    print "\e[s"
-  end
-
-  # Restore the state of the cursor.
-  def self.restore_cursor
-    print "\e[u"
-  end
-
-  # Save the state of the screen.
-  def self.save_screen
-    print "\e[?1049h"
-  end
-
-  # Restore the state of the screen.
-  def self.restore_screen
-    print "\e[?1049l"
-  end
-
-  def self.show_cursor
-    print "\e[?12l\e[?25h"
-  end
-
-  def self.hide_cursor
-    print "\e[?25l"
+  def restore
+    restore_cursor && restore_screen
   end
 
   # Return the screen size.
-  def self.size
-    {
-      `tput cols`.to_i,
-      `tput lines`.to_i,
-    }
+  def size!
+    if system "command -v tput"
+      {cols: `tput cols`.to_i, rows: `tput lines`.to_i}
+    else
+      raise UnsupportedTerminal.new "System does not have tput"
+    end
+  end
+
+  class UnsupportedTerminal < Exception
   end
 end
+
+# ANSI.move_cursor(5, 5)
+ANSI.clear!

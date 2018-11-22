@@ -46,8 +46,6 @@ sleep 2
 
 ANSI.clear
 size = ANSI.size
-w = size[:width]
-h = size[:height]
 ANSI.move(0, 0)
 print "Width: " + w.to_s + ", Height: " + h.to_s
 sleep 2
